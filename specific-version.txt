@@ -1,0 +1,39 @@
+Step 1: Point to the "Old Releases" Servers
+
+You need to tell Ubuntu to stop looking at the standard mirrors and look at the archive.
+
+Open your sources list:
+sudo nano /etc/apt/sources.list
+
+Use the "Search and Replace" feature in Nano:
+
+Press Ctrl + \
+
+Search for: [http://archive.ubuntu.com/ubuntu](http://archive.ubuntu.com/ubuntu) (or whatever your current mirror is)
+
+Replace with: [http://old-releases.ubuntu.com/ubuntu](http://old-releases.ubuntu.com/ubuntu)
+
+Press A to replace all.
+
+Repeat for [http://security.ubuntu.com/ubuntu](http://security.ubuntu.com/ubuntu).
+
+Press Ctrl + O to save and Ctrl + X to exit.
+
+Step 2: The "Force" Upgrade
+
+Because 25.04 is dead, the standard manager might still block you. You'll need to do a "dist-upgrade" which is a more aggressive way to swap versions.
+
+Bash
+sudo apt update
+sudo apt full-upgrade
+Step 3: Change the Release Name
+
+If you are still on Noble (24.04) and want to jump specifically to Plucky (25.04), you would technically need to replace every instance of noble with plucky in that same /etc/apt/sources.list file before running the update commands above.
+
+⚠️ A Serious Peer-to-Peer Warning
+
+I have to be direct with you: Running 25.04 right now is a major security risk.
+
+No Patches: Since January, any new Linux viruses or browser exploits found have not been fixed for 25.04.
+
+The "Dead End" Problem: Once you are on 25.04, you are stuck in an unsupported "pocket." You won't be able to easily upgrade to 25.10 or 26.04 without doing this manual "Old Releases" dance all over again.
