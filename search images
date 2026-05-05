@@ -1,0 +1,1 @@
+gcloud compute images list --project ubuntu-os-cloud --no-standard-images
