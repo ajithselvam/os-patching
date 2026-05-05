@@ -1,0 +1,50 @@
+Since you want to practice an OS upgrade safely without risking your main machine, you can use Docker, but there is a catch: Docker containers are not designed to be "upgraded" like virtual machines.
+
+Normally, in Docker, you just change the tag (e.g., from ubuntu:20.04 to ubuntu:22.04) and restart. However, if you want to practice the process of running do-release-upgrade, you can use an older Ubuntu image.
+
+1. The Practice Lab Setup
+Run a container using an older LTS version (like Ubuntu 20.04 "Focal") to practice moving to 22.04 "Jammy".
+
+Bash
+docker run -it ubuntu:20.04 /bin/bash
+2. Prepare the Container
+Standard Docker images are "slimmed down," so you need to install the upgrade tools manually once inside the container:
+
+Bash
+# Update the current package list
+apt update
+
+# Install the upgrade tool and necessary utilities
+apt install -y ubuntu-release-upgrader-core python3-distupgrade wget
+3. The "Cheat" for Docker
+The do-release-upgrade command usually checks if you are running on a "real" machine or a VM. To make it work inside a Docker container, you have to bypass a few checks.
+
+Run the upgrade with the "developer" flag:
+
+Bash
+do-release-upgrade -d
+Important Considerations for Docker Practice
+Kernel Limitations: A Docker container shares the host's Kernel. When you upgrade Ubuntu inside Docker, you are upgrading the libraries and binaries, but the Kernel stays exactly the same as your host machine.
+
+Systemd Issues: Docker containers usually don't run systemd (the init system). During the upgrade, you might see many errors like System has not been booted with systemd. You can generally ignore these for practice, as they won't stop the file upgrades.
+
+The "No-Loss" Test: To truly test your "don't lose anything" requirement:
+
+Create a dummy file: touch /root/important_data.txt.
+
+Install a specific package: apt install screen -y.
+
+Run the upgrade.
+
+After it finishes, check if screen is still there and your file exists.
+
+Better Alternative: VirtualBox or UTM
+If you want a 100% realistic experience where the Kernel actually updates and the system reboots properly:
+
+Download a Ubuntu 20.04 ISO.
+
+Install it in VirtualBox (Windows/Linux) or UTM (Mac).
+
+Take a "Snapshot" before you start.
+
+Run the upgrade commands. If it breaks, you can "Restore Snapshot" and try again instantly.
