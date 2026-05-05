@@ -1,0 +1,79 @@
+hostnamectl
+
+lsb_release -a
+
+cat /etc/os-release
+
+
+
+UPGARDE----->
+
+Updating a Linux system to a new Major LTS (Long Term Support) version is a serious operation. While Ubuntu is designed to handle this without data loss, the "golden rule" of sysadmin work applies here: Back up your data first.
+
+Since you mentioned you have many packages installed, we will use the safest method to ensure dependencies are resolved correctly.
+
+Phase 1: Pre-Upgrade Maintenance
+Before moving to a new LTS, you must ensure your current version is perfectly healthy and fully updated.
+
+Update current packages:
+
+Bash
+sudo apt update && sudo apt upgrade -y
+Perform a Dist-Upgrade:
+This handles changing dependencies within your current version.
+
+Bash
+    sudo apt dist-upgrade -y
+    ```
+3.  **Clean up old files:**
+    
+```bash
+    sudo apt autoremove
+    ```
+
+---
+
+### Phase 2: The Upgrade Process
+Ubuntu uses a specific tool called the "Release Upgrader" which is much safer than just changing source files manually.
+
+1.  **Install the manager (if not present):**
+    
+```bash
+    sudo apt install update-manager-core
+    ```
+
+2.  **Check the Upgrade Policy:**
+    Open the configuration file:
+    
+```bash
+    sudo nano /etc/update-manager/release-upgrades
+    ```
+    Ensure the last line says `Prompt=lts`. (If it says `normal`, it might try to take you to a non-LTS version). Press `Ctrl+O`, `Enter`, and `Ctrl+X` to save and exit.
+
+3.  **Run the Upgrade:**
+    ```bash
+    sudo do-release-upgrade
+    ```
+    *Note: If you are doing this over SSH, it will open a second port (usually 1022) as a backup in case the connection drops. Ensure your firewall allows it.*
+
+---
+
+### Phase 3: What happens to your "Many Packages"?
+
+
+
+*   **Third-Party Repos (PPAs):** During the upgrade, Ubuntu will **disable** all your PPAs and external repositories (like Docker, Jenkins, etc.). This is to prevent them from crashing the core OS upgrade.
+*   **Post-Upgrade Task:** Once the upgrade is finished and you reboot, you will need to:
+    1.  Go to your Software Sources.
+    2.  Re-enable your external repositories.
+    3.  Change the "codename" in those repo files (e.g., changing `focal` to `jammy`) to match your new OS version.
+
+---
+
+### Critical Tips for "No Loss"
+*   **Keep your Configs:** During the upgrade, the terminal will ask: *"A new version of /etc/xxx/config is available. Do you want to keep your version or install the maintainer's version?"*
+    *   If you have customized that package heavily, choose **"Keep the local version currently installed"**.
+*   **Disk Space:** Ensure you have at least 5GB of free space. Upgrades fail painfully when the disk hits 100% midway.
+*   **Stability:** Do not do this on a laptop with a low battery. Plug it into a power source.
+
+Would you like the commands to re-enable your specific repositories (like the Jenkins one f
