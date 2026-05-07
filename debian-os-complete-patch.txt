@@ -1,0 +1,74 @@
+check version
+  lsb_release -a
+  hostnamectl
+  cat /etc/os-release
+
+  2. Fully update Debian 11 first
+sudo apt update
+sudo apt upgrade -y
+sudo apt full-upgrade -y
+sudo apt --purge autoremove -y
+
+
+  3. Backup your APT sources
+sudo cp /etc/apt/sources.list /etc/apt/sources.list.bak
+
+Also backup extra repo files:
+
+sudo cp -r /etc/apt/sources.list.d /etc/apt/sources.list.d.bak
+
+
+
+  4. Replace Bullseye with Bookworm
+
+Open sources file:
+
+sudo nano /etc/apt/sources.list
+
+Replace every:
+
+bullseye
+
+with:
+
+bookworm
+
+
+
+
+  6. Refresh package database
+sudo apt update
+7. Perform minimal upgrade
+sudo apt upgrade --without-new-pkgs -y
+
+
+
+
+
+  8. Perform full Debian 12 upgrade
+       sudo apt full-upgrade -y
+  9. Reboot into Debian 12
+     sudo reboot
+
+
+
+
+  11. Clean leftover packages
+sudo apt --purge autoremove -y
+sudo apt clean
+
+
+
+
+
+  Common issues
+Broken packages
+
+Run:
+
+sudo dpkg --configure -a
+sudo apt --fix-broken install
+
+
+
+  
