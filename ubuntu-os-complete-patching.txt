@@ -1,0 +1,136 @@
+Here’s the recommended upgrade path from Ubuntu 22.04 LTS (Jammy Jellyfish) to Ubuntu 24.04 LTS (Noble Numbat).
+
+Before starting:
+
+Backup important files.
+
+Ensure at least 3–5 GB free disk space:
+
+df -h
+Use a stable internet connection.
+
+If remote over SSH:
+
+screen
+
+or
+
+tmux
+1. Verify current version
+lsb_release -a
+
+Expected:
+
+Ubuntu 22.04.x LTS
+2. Fully update Jammy first
+sudo apt update
+sudo apt upgrade -y
+sudo apt full-upgrade -y
+sudo apt autoremove --purge -y
+
+Reboot:
+
+sudo reboot
+3. Ensure update-manager-core is installed
+sudo apt install update-manager-core -y
+
+Check release upgrader config:
+
+sudo nano /etc/update-manager/release-upgrades
+
+Ensure:
+
+Prompt=lts
+
+Save:
+
+CTRL+O → Enter
+CTRL+X
+4. Start the upgrade
+
+Run:
+
+sudo do-release-upgrade
+
+If it says no new release found, use:
+
+sudo do-release-upgrade -d
+
+As of Ubuntu 24.04 rollout phases, some systems may still require -d even for stable upgrades.
+
+Official Ubuntu upgrade docs:
+
+Ubuntu Release Upgrades Guide
+5. During the upgrade
+
+You’ll be prompted about:
+
+SSH daemon restart
+obsolete packages
+config file changes
+
+General recommendations:
+
+Keep existing config files if you manually edited them
+Otherwise install maintainer versions
+
+For SSH systems:
+
+The upgrader usually opens a temporary alternate SSH port if needed
+Keep your current SSH session open
+6. Reboot after completion
+sudo reboot
+7. Verify Ubuntu 24.04
+lsb_release -a
+
+Expected:
+
+Ubuntu 24.04 LTS
+
+Also verify kernel:
+
+uname -r
+8. Cleanup old packages
+sudo apt autoremove --purge -y
+sudo apt clean
+Optional: Remove obsolete kernels
+
+List installed kernels:
+
+dpkg --list | grep linux-image
+Common issues
+Broken packages
+sudo dpkg --configure -a
+sudo apt --fix-broken install
+Stuck upgrade
+
+Check logs:
+
+less /var/log/dist-upgrade/main.log
+Third-party repositories disabled
+
+Ubuntu automatically disables unsupported PPAs during upgrade.
+
+Re-enable carefully:
+
+sudo software-properties-gtk
+
+or manually edit:
+
+ls /etc/apt/sources.list.d/
+Recommended post-upgrade checks
+systemctl --failed
+df -h
+snap list
+If upgrading a production server
+
+Recommended extra precautions:
+
+Snapshot VM before upgrade
+Test on staging first
+Verify:
+Docker
+Kubernetes
+NVIDIA drivers
+VPN software
+Custom kernel modules
